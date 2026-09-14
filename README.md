@@ -1,59 +1,24 @@
+<div align="center">
+
 # Tally
 
-> **A financial ledger service that stays provably correct under concurrency and crashes.**  
-> *Does it tally? Prove it.*
+### Crash-safe, tamper-evident financial ledger
 
-Tally is a portfolio project focused on backend correctness, DevSecOps, cloud infrastructure, and SRE practices. The core goal is deliberately narrow: build a small financial ledger whose behavior can be **demonstrated and verified under concurrency, retries, crashes, and tampering**.
+A financial ledger designed to stay correct under **retries, concurrency, crashes, and tampering**.
+
+![Status](https://img.shields.io/badge/Status-In%20development-D97706)
+![Java](https://img.shields.io/badge/Java-21-EA2D2E?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6DB33F?logo=springboot&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+
+</div>
+
+## About
+
+Tally is a correctness-first ledger project built around **idempotent and concurrency-safe transfers, double-entry accounting, crash-safety, a hash-chained event log, and continuous reconciliation**.
+
+The platform will be delivered with Kubernetes, Terraform/AWS, GitLab CI/CD security gates, and production-style observability.
 
 ## Status
 
-🚧 **In development — Phase 0: repository initialization.**
-
-Nothing below is claimed as implemented until its checkpoint is green. The project will be built incrementally, keeping `main` demoable at every stage.
-
-## Planned core
-
-- Java 21 + Spring Boot 3
-- PostgreSQL
-- Idempotent, concurrency-safe, double-entry transfers
-- Crash-safety + fault-injection harness
-- Append-only hash-chained event log
-- Standalone integrity verifier + continuous reconciliation
-- Kubernetes + Helm + Argo CD
-- Terraform + AWS / LocalStack
-- Ansible host hardening
-- GitLab CI/CD with DevSecOps gates
-- Prometheus, Grafana, and OpenTelemetry
-
-## Repository layout
-
-```text
-tally/
-├── app/                   # Spring Boot service
-├── verifier/              # tally-verify CLI
-├── infra/
-│   ├── terraform/         # cloud resources
-│   └── ansible/           # host hardening
-├── deploy/
-│   ├── helm/tally/        # Helm chart
-│   └── argocd/            # Argo CD application
-├── monitoring/
-│   ├── prometheus/
-│   ├── grafana/
-│   └── alerts/
-├── load/                  # load / fault tests
-└── docs/
-    ├── ARCHITECTURE.md
-    ├── SECURITY.md
-    └── RUNBOOK.md
-```
-
-## Build philosophy
-
-1. Keep a complete, demoable system at every checkpoint.
-2. Put real depth into correctness and crash-safety before adding platform polish.
-3. Treat security, reliability, and observability as design constraints from the start.
-
-## License
-
-License to be decided before the first public release.
+🚧 **In development.** Initial repository setup is complete; implementation is starting with the Spring Boot service.
