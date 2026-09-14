@@ -1,0 +1,35 @@
+# Java / Maven
+app/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Ansible
+*.retry
+
+# Logs / runtime
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db

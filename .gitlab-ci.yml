@@ -1,0 +1,11 @@
+# Phase 0 bootstrap only.
+# Replaced by the real build/test pipeline in Phase 1 once the Spring app exists.
+
+stages:
+  - bootstrap
+
+repository-skeleton:
+  stage: bootstrap
+  image: alpine:3.20
+  script:
+    - echo "Tally repository skeleton is initialized."
