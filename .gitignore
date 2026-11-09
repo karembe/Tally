@@ -33,3 +33,11 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+
+
+# Local planning
+plan/
+
+# Local CI
+.gitlab-ci-local/
+gitleaks-report.json
