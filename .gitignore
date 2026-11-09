@@ -37,3 +37,7 @@ Thumbs.db
 
 # Local planning
 plan/
+
+# Local CI
+.gitlab-ci-local/
+gitleaks-report.json
