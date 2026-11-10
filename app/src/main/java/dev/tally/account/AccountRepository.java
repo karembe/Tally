@@ -47,6 +47,13 @@ public class AccountRepository {
                 .optional();
     }
 
+    public List<Account> list(int limit) {
+        return jdbc.sql("select " + COLUMNS + " from accounts order by kind desc, created_at desc limit :limit")
+                .param("limit", limit)
+                .query(AccountRepository::map)
+                .list();
+    }
+
     /**
      * Locks the rows in Postgres uuid order, the same order for every transaction, so two opposite
      * transfers (A to B, B to A) can never wait on each other in a cycle.

@@ -70,6 +70,10 @@ public class TransferService {
         return transfers.find(id).orElseThrow(() -> ApiException.notFound("transfer " + id + " does not exist"));
     }
 
+    List<TransferRepository.Summary> recent(int limit) {
+        return transfers.recent(Math.clamp(limit, 1, 200));
+    }
+
     public List<Entry> entries(UUID transferId) {
         return transfers.entries(transferId);
     }

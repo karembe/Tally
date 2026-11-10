@@ -30,6 +30,10 @@ public class AccountService {
         return accounts.findById(id).orElseThrow(() -> ApiException.notFound("account " + id + " does not exist"));
     }
 
+    public List<Account> list(int limit) {
+        return accounts.list(Math.clamp(limit, 1, 500));
+    }
+
     public List<Entry> recentEntries(UUID id) {
         return accounts.recentEntries(id, RECENT_ENTRIES);
     }

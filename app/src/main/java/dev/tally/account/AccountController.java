@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,6 +32,11 @@ class AccountController {
         Account account = service.open(request.ownerName(), request.currency());
         return ResponseEntity.created(URI.create("/accounts/" + account.id()))
                 .body(AccountView.of(account, List.of()));
+    }
+
+    @GetMapping
+    List<AccountView> list(@RequestParam(defaultValue = "200") int limit) {
+        return service.list(limit).stream().map(a -> AccountView.of(a, List.of())).toList();
     }
 
     @GetMapping("/{id}")

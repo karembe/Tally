@@ -64,6 +64,31 @@ class TransferRepository {
                 .optional();
     }
 
+    List<Summary> recent(int limit) {
+        return jdbc.sql("""
+                        select t.id, t.amount, t.currency, t.status, t.created_at, e.seq,
+                               t.from_account, fa.owner_name as from_owner, t.to_account, ta.owner_name as to_owner
+                        from transfers t
+                        join ledger_events e on e.transfer_id = t.id
+                        join accounts fa on fa.id = t.from_account
+                        join accounts ta on ta.id = t.to_account
+                        order by e.seq desc
+                        limit :limit""")
+                .param("limit", limit)
+                .query((rs, row) -> new Summary(
+                        rs.getObject("id", UUID.class),
+                        rs.getObject("from_account", UUID.class),
+                        rs.getString("from_owner"),
+                        rs.getObject("to_account", UUID.class),
+                        rs.getString("to_owner"),
+                        rs.getLong("amount"),
+                        rs.getString("currency"),
+                        rs.getString("status"),
+                        rs.getLong("seq"),
+                        rs.getObject("created_at", OffsetDateTime.class).toInstant()))
+                .list();
+    }
+
     List<Entry> entries(UUID transferId) {
         return jdbc.sql("""
                         select transfer_id, account_id, amount, direction, created_at
@@ -75,5 +100,9 @@ class TransferRepository {
 
     private static OffsetDateTime utc(Instant t) {
         return OffsetDateTime.ofInstant(t, ZoneOffset.UTC);
+    }
+
+    record Summary(UUID id, UUID fromAccount, String fromOwner, UUID toAccount, String toOwner, long amount,
+                   String currency, String status, long eventSeq, Instant createdAt) {
     }
 }
