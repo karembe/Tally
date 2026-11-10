@@ -1,0 +1,38 @@
+# Manual requests for `make run` (VS Code REST Client / IntelliJ HTTP client). Amounts are cents.
+@base = http://localhost:8181
+@admin = dev-admin-token
+
+### Open Alice
+# @name alice
+POST {{base}}/accounts
+Content-Type: application/json
+
+{"ownerName": "Alice", "currency": "EUR"}
+
+### Open Bob
+# @name bob
+POST {{base}}/accounts
+Content-Type: application/json
+
+{"ownerName": "Bob", "currency": "EUR"}
+
+### Fund Alice from the EUR treasury
+POST {{base}}/funding
+X-Admin-Token: {{admin}}
+Idempotency-Key: fund-{{$guid}}
+Content-Type: application/json
+
+{"toAccountId": "{{alice.response.body.id}}", "amount": 50000}
+
+### Transfer: send it twice, the second answer is a 200 replay with the same body
+POST {{base}}/transfers
+Idempotency-Key: demo-{{alice.response.body.id}}
+Content-Type: application/json
+
+{"fromAccountId": "{{alice.response.body.id}}", "toAccountId": "{{bob.response.body.id}}", "amount": 1000, "currency": "EUR"}
+
+### Alice: balance + last 50 entries
+GET {{base}}/accounts/{{alice.response.body.id}}
+
+### Metrics
+GET {{base}}/actuator/prometheus

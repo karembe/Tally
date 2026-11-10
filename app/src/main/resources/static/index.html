@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tally console</title>
+    <link rel="stylesheet" href="fonts/fonts.css">
+    <link rel="stylesheet" href="console.css">
+    <script src="console.js" defer></script>
+</head>
+<body>
+<header class="top">
+    <a class="brand" href="#/overview">Tally</a>
+    <span class="env">local</span>
+    <button class="seal" id="seal" type="button" title="Re-run the integrity check">
+        <span class="seal-dot"></span><span id="seal-text">checking…</span>
+    </button>
+    <button class="theme" id="theme" type="button" aria-label="Toggle dark mode">◐</button>
+</header>
+
+<nav class="side" aria-label="Sections">
+    <a href="#/overview" data-route="overview">Overview</a>
+    <a href="#/accounts" data-route="accounts">Accounts</a>
+    <a href="#/transfers" data-route="transfers">Transfers</a>
+    <a href="#/chain" data-route="chain">Event chain</a>
+    <a href="#/funding" data-route="funding">Funding <small>admin</small></a>
+</nav>
+
+<main id="view" tabindex="-1"></main>
+</body>
+</html>
