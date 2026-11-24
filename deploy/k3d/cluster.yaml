@@ -1,0 +1,19 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: tally
+servers: 1
+agents: 1
+network: tally-net
+options:
+  k3s:
+    extraArgs:
+      - arg: --disable=traefik
+        nodeFilters:
+          - server:*
+registries:
+  config: |
+    mirrors:
+      "localhost:5000":
+        endpoint:
+          - http://tally-registry:5000
