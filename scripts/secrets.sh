@@ -11,4 +11,7 @@ if ! kubectl -n "$ns" get secret tally-db-passwords >/dev/null 2>&1; then
   kubectl -n "$ns" create secret generic tally-db-passwords \
     --from-literal=app="$(rand)" --from-literal=verifier="$(rand)" >/dev/null
 fi
+if ! kubectl -n "$ns" get secret tally-admin >/dev/null 2>&1; then
+  kubectl -n "$ns" create secret generic tally-admin --from-literal=token="$(rand)" >/dev/null
+fi
 echo "secrets ready in namespace $ns"

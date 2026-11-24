@@ -11,6 +11,8 @@ database:
   ownerSecret: tally-db-owner
   passwordsSecret: tally-db-passwords
 
+adminSecret: tally-admin
+
 resources:
   requests:
     cpu: 100m

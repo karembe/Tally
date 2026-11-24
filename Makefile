@@ -9,7 +9,7 @@ REGISTRY_IMAGE := registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6
 TOOLS := java mvn go docker kubectl helm k3d terraform ansible gitleaks semgrep trivy syft cosign \
          kyverno argocd k6 pre-commit gitlab-ci-local awslocal
 
-.PHONY: help check-tools ci hooks db run test registry cluster cluster-down up deploy demo
+.PHONY: help check-tools ci hooks db run test registry cluster cluster-down up down smoke deploy demo
 
 help:
 	@echo "Tally"
@@ -22,7 +22,9 @@ help:
 	@echo "  make registry     Start the local image registry (localhost:5000)"
 	@echo "  make cluster      Create the cluster (CLUSTER=rd|k3d, default rd)"
 	@echo "  make cluster-down Delete the k3d cluster"
-	@echo "  make up           Available after phase 2"
+	@echo "  make up           Build, push and deploy everything (CLUSTER=rd|k3d)"
+	@echo "  make down         Remove everything (CLUSTER=rd|k3d)"
+	@echo "  make smoke        End-to-end check against the cluster"
 	@echo "  make demo         Available after phase 5"
 
 check-tools:
@@ -68,6 +70,15 @@ cluster-down:
 	@docker network rm tally-net >/dev/null 2>&1 || true
 	@kubectl config use-context rancher-desktop >/dev/null
 
-up deploy demo:
+up:
+	@CLUSTER=$(CLUSTER) ./scripts/up.sh
+
+down:
+	@CLUSTER=$(CLUSTER) ./scripts/down.sh
+
+smoke:
+	@./scripts/smoke.sh
+
+deploy demo:
 	@echo "Not implemented yet."
 	@exit 1

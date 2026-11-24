@@ -34,6 +34,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.database.passwordsSecret }}
                   key: app
+            - name: TALLY_ADMIN_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.adminSecret }}
+                  key: token
           securityContext:
             {{- include "tally.securityContext" . | nindent 12 }}
           resources:
