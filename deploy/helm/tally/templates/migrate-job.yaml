@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tally-migrate
+  labels:
+    {{- include "tally.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        {{- include "tally.podSecurityContext" . | nindent 8 }}
+      containers:
+        - name: migrate
+          image: {{ include "tally.image" . }}
+          args:
+            - --spring.main.web-application-type=none
+            - --spring.flyway.enabled=true
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.database.url | quote }}
+            - name: TALLY_DB_USER
+              valueFrom:
+                secretKeyRef: {name: {{ .Values.database.ownerSecret }}, key: username}
+            - name: TALLY_DB_PASSWORD
+              valueFrom:
+                secretKeyRef: {name: {{ .Values.database.ownerSecret }}, key: password}
+            - name: TALLY_APP_DB_PASSWORD
+              valueFrom:
+                secretKeyRef: {name: {{ .Values.database.passwordsSecret }}, key: app}
+            - name: TALLY_VERIFIER_DB_PASSWORD
+              valueFrom:
+                secretKeyRef: {name: {{ .Values.database.passwordsSecret }}, key: verifier}
+          securityContext:
+            {{- include "tally.securityContext" . | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}

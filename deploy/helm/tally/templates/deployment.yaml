@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tally
+  labels:
+    {{- include "tally.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tally
+  template:
+    metadata:
+      labels:
+        {{- include "tally.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: tally
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        {{- include "tally.podSecurityContext" . | nindent 8 }}
+      containers:
+        - name: tally
+          image: {{ include "tally.image" . }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.port }}
+          envFrom:
+            - configMapRef:
+                name: tally-config
+          env:
+            - name: TALLY_APP_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.passwordsSecret }}
+                  key: app
+          securityContext:
+            {{- include "tally.securityContext" . | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet: {path: /actuator/health/liveness, port: http}
+            periodSeconds: 3
+            failureThreshold: 30
+          livenessProbe:
+            httpGet: {path: /actuator/health/liveness, port: http}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: {path: /actuator/health/readiness, port: http}
+            periodSeconds: 5
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
