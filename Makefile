@@ -1,9 +1,11 @@
 SHELL := /bin/bash
 
+REGISTRY_IMAGE := registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
+
 TOOLS := java mvn go docker kubectl helm k3d terraform ansible gitleaks semgrep trivy syft cosign \
          kyverno argocd k6 pre-commit gitlab-ci-local awslocal
 
-.PHONY: help check-tools ci hooks db run test up deploy demo
+.PHONY: help check-tools ci hooks db run test registry up deploy demo
 
 help:
 	@echo "Tally"
@@ -13,6 +15,7 @@ help:
 	@echo "  make db           Start local Postgres (127.0.0.1:5433)"
 	@echo "  make run          Run the app with demo data on :8181"
 	@echo "  make test         Run all app tests (Testcontainers)"
+	@echo "  make registry     Start the local image registry (localhost:5000)"
 	@echo "  make up           Available after phase 2"
 	@echo "  make demo         Available after phase 5"
 
@@ -36,6 +39,12 @@ run: db
 
 test:
 	./app/mvnw -f app verify
+
+registry:
+	@docker inspect tally-registry >/dev/null 2>&1 || docker run -d --name tally-registry --restart unless-stopped \
+		-p 127.0.0.1:5000:5000 -v tally-registry:/var/lib/registry $(REGISTRY_IMAGE) >/dev/null
+	@docker start tally-registry >/dev/null
+	@curl -fsS localhost:5000/v2/ >/dev/null && echo "registry up on localhost:5000"
 
 up deploy demo:
 	@echo "Not implemented yet."
