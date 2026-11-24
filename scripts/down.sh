@@ -11,7 +11,8 @@ fi
 ctx=rancher-desktop
 echo "removing Tally from Rancher Desktop"
 helm --kube-context $ctx -n tally uninstall tally 2>/dev/null || true
-kubectl --context $ctx -n tally delete cluster tally-db --ignore-not-found --wait=true
+kubectl --context $ctx get crd clusters.postgresql.cnpg.io >/dev/null 2>&1 \
+  && kubectl --context $ctx -n tally delete cluster tally-db --ignore-not-found --wait=true
 kubectl --context $ctx delete namespace tally --ignore-not-found --wait=true
 helm --kube-context $ctx -n cnpg-system uninstall cnpg 2>/dev/null || true
 kubectl --context $ctx delete namespace cnpg-system --ignore-not-found --wait=true

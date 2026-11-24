@@ -9,7 +9,7 @@ REGISTRY_IMAGE := registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6
 TOOLS := java mvn go docker kubectl helm k3d terraform ansible gitleaks semgrep trivy syft cosign \
          kyverno argocd k6 pre-commit gitlab-ci-local awslocal
 
-.PHONY: help check-tools ci hooks db run test registry cluster cluster-down up down smoke deploy demo
+.PHONY: help check-tools ci hooks db run test registry cluster cluster-down up down smoke load deploy demo
 
 help:
 	@echo "Tally"
@@ -25,6 +25,7 @@ help:
 	@echo "  make up           Build, push and deploy everything (CLUSTER=rd|k3d)"
 	@echo "  make down         Remove everything (CLUSTER=rd|k3d)"
 	@echo "  make smoke        End-to-end check against the cluster"
+	@echo "  make load         k6 load test: 50 VUs, 2 min of random transfers"
 	@echo "  make demo         Available after phase 5"
 
 check-tools:
@@ -78,6 +79,9 @@ down:
 
 smoke:
 	@./scripts/smoke.sh
+
+load:
+	@./scripts/load.sh
 
 deploy demo:
 	@echo "Not implemented yet."
