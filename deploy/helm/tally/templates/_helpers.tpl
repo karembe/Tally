@@ -1,5 +1,5 @@
 {{- define "tally.image" -}}
-{{ .Values.image.repository }}@{{ .Values.image.digest }}
+{{ .Values.image.repository }}@{{ required "image.digest is required: deploy by digest, make up sets it" .Values.image.digest }}
 {{- end -}}
 
 {{- define "tally.labels" -}}
